@@ -106,4 +106,45 @@ public class EmployeeController {
         return Result.success(pageResult);
 
     }
+
+    /**
+     * 员工状态修改-启用禁用
+     * @param id
+     * @param status
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("员工状态修改")
+    // PathVariable 路径参数
+    public Result startOrStop(@PathVariable("id") Long id, @PathVariable("status") Integer status){
+        log.info("员工状态修改：id={},status={}",id,status);
+        employeeService.startOrStop(id,status);
+        return Result.success();
+    }
+
+    /**
+     * 根据id查询员工
+     * @param id
+     * @return
+     */
+     @GetMapping("/{id}")
+     @ApiOperation("根据id查询员工")
+     //@PathVariable 是一个注解，用于获取路径参数--获取到id
+     public  Result<Employee> getById(@PathVariable Long id){
+        Employee employee=employeeService.getById(id);
+        return Result.success(employee);
+     }
+
+    /**
+     * 修改员工
+     * @param employeeDTO
+     * @return
+     */
+     @PutMapping
+     @ApiOperation("修改员工")
+     public Result update(@RequestBody EmployeeDTO employeeDTO){
+         log.info("修改员工：{}",employeeDTO);
+         employeeService.update(employeeDTO);
+        return Result.success();
+     }
 }
