@@ -90,6 +90,8 @@ public class EmployeeController {
 
     /**
      * 员工分页查询
+     * @param employeePageQueryDTO 查询条件
+     * @return 员工分页查询结果
      */
     @ApiOperation(value = "员工分页查询")
     @GetMapping("/page")
@@ -97,5 +99,20 @@ public class EmployeeController {
         log.info("员工分页查询：{}", employeePageQueryDTO);
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     * 启用禁用员工账号
+     * @param status 账号状态（0：禁用，1：启用）
+     * @param id     员工ID
+     * @return 操作结果
+     */
+    @ApiOperation(value = "启用禁用员工账号")
+    @PostMapping("/status/{status}")
+    // @PathVariable注解用于提取url中的变量，并赋值给形参，路径参数
+    public Result startOrStop(@PathVariable Integer status, Long id) {
+        log.info("启用禁用员工账号：{}", status);
+        employeeService.startOrStop(status, id);
+        return Result.success();
     }
 }
