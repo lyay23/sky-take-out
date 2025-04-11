@@ -33,8 +33,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     /**
      * 员工登录
      *
-     * @param employeeLoginDTO
-     * @return
+     * @param employeeLoginDTO 登录时提交的数据
+     * @return 返回登录结果
      */
     @Override
     public Employee login(EmployeeLoginDTO employeeLoginDTO) {
@@ -69,6 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 新增员工
+     * @param employeedDTO 员工信息
      */
     @Override
     public void save(EmployeeDTO employeedDTO) {
@@ -99,6 +100,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 分页查询
+     * @param employeePageQueryDTO 分页查询条件
+     * @return 返回分页结果
      */
     @Override
     public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
@@ -115,6 +118,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 启用禁用员工账号
+     * @param status 状态
+     * @param id 员工id
      */
     @Override
     public void startOrStop(Integer status, Long id) {
@@ -125,6 +130,34 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .id(id)
                 .build();
         employeeMapper.update(employee);
+    }
 
+    /**
+     * 根据id查询员工
+     * @param id 员工id
+     * @return 员工信息
+     */
+    @Override
+    public Employee getById(Long id) {
+        // 查询员工信息
+        Employee employee = employeeMapper.getById(id);
+        employee.setPassword("******");
+        return employee;
+    }
+
+    /**
+     * 修改员工
+     * @param employeeDTO 员工信息
+     */
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+
+        //设置基本属性
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+       employeeMapper.update(employee);
     }
 }
