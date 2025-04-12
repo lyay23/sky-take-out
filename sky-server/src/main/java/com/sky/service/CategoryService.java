@@ -24,4 +24,11 @@ public interface CategoryService {
      * @param categoryPageQueryDTO 分类分页查询
      */
     PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
+
+    /**
+     * 启用禁用分类
+     * @param status 状态
+     * @param id 分类id
+     */
+    void startOrStop(Integer status, Long id);
 }

@@ -10,7 +10,7 @@
         (#{type},#{name},#{sort},#{createTime},#{updateTime},#{createUser},#{updateUser})
     </insert>
 
-<!--  分类分页查询  -->
+    <!--  分类分页查询  -->
     <select id="pageQuery" resultType="com.sky.entity.Category">
         select * from category
         <where>
@@ -23,4 +23,20 @@
         </where>
         order by create_time desc
     </select>
+<!-- 修改代码-->
+    <update id="update">
+        update category
+        <set>
+            <if test="id != null">id = #{id},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+        </set>
+        where id = #{id}
+    </update>
 </mapper>

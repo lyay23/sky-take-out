@@ -28,4 +28,11 @@ public interface CategoryMapper {
      * @return 返回分页结果
      */
     Page<Category> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
+
+    /**
+     * 启用禁用分类
+     * @param status 状态
+     * @param id 分类id
+     */
+    void update(Category category);
 }

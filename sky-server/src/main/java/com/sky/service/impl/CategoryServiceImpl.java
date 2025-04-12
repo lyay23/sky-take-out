@@ -7,7 +7,6 @@ import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
-import com.sky.entity.Employee;
 import com.sky.mapper.CategoryMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
@@ -37,24 +36,26 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public void save(CategoryDTO categoryDTO) {
-        // 1. 将dto转为实体对象
         Category category = new Category();
-        // 2. 拷贝
+        //属性拷贝
         BeanUtils.copyProperties(categoryDTO, category);
-        // 3. 设置默认状态为禁用，需要手动设置启用
+
+        //分类状态默认为禁用状态0
         category.setStatus(StatusConstant.DISABLE);
-        // 4.设置操作时间,操作人
+
+        //设置创建时间、修改时间、创建人、修改人
         category.setCreateTime(LocalDateTime.now());
         category.setUpdateTime(LocalDateTime.now());
         category.setCreateUser(BaseContext.getCurrentId());
         category.setUpdateUser(BaseContext.getCurrentId());
-        // 5. 保存到数据库
+
         categoryMapper.insert(category);
     }
 
+
     /**
      * 分类分页查询
-     * @param categoryPageQueryDTO
+     * @param categoryPageQueryDTO 分页查询条件
      */
     @Override
     public PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO) {
@@ -63,8 +64,23 @@ public class CategoryServiceImpl implements CategoryService {
         Page<Category> page =categoryMapper.pageQuery(categoryPageQueryDTO);
 
         // 获取分页查询结果,并将结果封装到PageResult中
-        long total = page.getTotal();
-        List<Category> result = page.getResult();
-        return new PageResult(total, result);
+        return new PageResult(page.getTotal(), page.getResult());
+    }
+
+    /**
+     * 启用禁用分类
+     * @param status 状态
+     * @param id 分类id
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        // 创建一个Category对象，设置状态和id
+        Category category = Category.builder()
+                .status(status)
+                .updateTime(LocalDateTime.now())
+                .updateUser(BaseContext.getCurrentId())
+                .id(id)
+                .build();
+        categoryMapper.update(category);
     }
 }

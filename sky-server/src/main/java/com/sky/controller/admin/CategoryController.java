@@ -35,7 +35,7 @@ public class CategoryController {
      */
     @ApiOperation(value = "新增分类")
     @PostMapping
-    public Result save(@RequestBody CategoryDTO categoryDTO){
+    public Result<String> save(@RequestBody CategoryDTO categoryDTO){
         log.info("新增分类：{}",categoryDTO);
         categoryService.save(categoryDTO);
         return Result.success();
@@ -54,6 +54,18 @@ public class CategoryController {
         return Result.success(pageResult);
     }
 
-
+    /**
+     * 启用禁用分类
+     * @param status 状态 1 启用 0 禁用
+     * @param id 分类id
+     * @return 启用禁用结果
+     */
+    @ApiOperation(value = "启用禁用分类")
+    @PostMapping("/status/{status}")
+    public Result startOrStop(@PathVariable Integer status,Long id){
+        log.info("启用禁用分类：{},id为{}",status,id);
+        categoryService.startOrStop(status,id);
+        return Result.success();
+    }
 
 }
