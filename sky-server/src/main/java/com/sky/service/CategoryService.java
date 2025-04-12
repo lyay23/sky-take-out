@@ -1,6 +1,8 @@
 package com.sky.service;
 
 import com.sky.dto.CategoryDTO;
+import com.sky.dto.CategoryPageQueryDTO;
+import com.sky.result.PageResult;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,4 +18,10 @@ public interface CategoryService {
      * @param categoryDTO 新增分类
      */
     void save(CategoryDTO categoryDTO);
+
+    /**
+     * 分类分页查询
+     * @param categoryPageQueryDTO 分类分页查询
+     */
+    PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
 }

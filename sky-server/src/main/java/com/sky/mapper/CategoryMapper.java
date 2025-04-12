@@ -1,5 +1,7 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
+import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.web.bind.annotation.Mapping;
@@ -19,4 +21,11 @@ public interface CategoryMapper {
      * @param category 分类信息
      */
     void insert(Category category);
+
+    /**
+     * 分类分页查询
+     * @param categoryPageQueryDTO 分页查询条件
+     * @return 返回分页结果
+     */
+    Page<Category> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
 }
