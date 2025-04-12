@@ -90,6 +90,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public void delete(Long id) {
+        // TODO 删除分类之前需要判断是否关联了菜品或套餐
         categoryMapper.deleteById(id);
     }
 
