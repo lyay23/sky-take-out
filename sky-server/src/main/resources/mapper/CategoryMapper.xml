@@ -22,9 +22,9 @@
                 and type = #{type}
             </if>
         </where>
-        order by create_time desc
+        order by create_time desc,sort asc
     </select>
-<!-- 修改代码-->
+    <!-- 修改代码-->
     <update id="update">
         update category
         <set>
@@ -45,4 +45,14 @@
     <delete id="deleteById">
         delete from category where id = #{id}
     </delete>
+
+<!--    根据类型查询操作-->
+    <select id="list" resultType="Category">
+        select * from category
+        where status = 1
+        <if test="type != null">
+            and type = #{type}
+        </if>
+        order by sort asc ,create_time desc
+    </select>
 </mapper>

@@ -4,7 +4,10 @@ import com.github.pagehelper.Page;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.web.bind.annotation.Mapping;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,4 +42,14 @@ public interface CategoryMapper {
      * @param id 分类id
      */
     void deleteById(Long id);
+
+
+
+    /**
+     * 根据类型查询分类
+     * @param type 分类类型
+     * @return 返回查询到的分类信息
+     */
+    List<Category> list(Integer type);
+
 }
