@@ -2,15 +2,20 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.CategoryMapper;
+import com.sky.mapper.DishMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +35,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    @Autowired
+    private DishMapper dishMapper;
+
+    @Autowired
+    private SetmealMapper setmealMapper;
     /**
      * 新增分类
      * @param categoryDTO 分类信息
@@ -85,13 +95,28 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 删除分类
+     * 删除分类，删除分类时，需要判断该分类是否关联了菜品或套餐，如果关联了，则不能删除
      * @param id 分类id
      */
     @Override
     public void delete(Long id) {
-        // TODO 删除分类之前需要判断是否关联了菜品或套餐
+        // 查询当前分类是否关联了菜品，如果关联了，则不能删除
+        Integer countByCategoryId = dishMapper.countByCategoryId(id);
+        if (countByCategoryId > 0) {
+            // 当前分类下有菜品，不能删除
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH) {
+            };
+        }
+
+        // 查询当前分类是否关联了套餐，如果关联了，则不能删除
+        Integer countBySetmealId = setmealMapper.countByCategoryId(id);
+        if (countBySetmealId > 0) {
+            // 当前分类下有套餐，不能删除
+            throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
+        }
+
         categoryMapper.deleteById(id);
+
     }
 
     /**
