@@ -49,4 +49,10 @@ public interface CategoryService {
      * @return 分类信息
      */
     List<Category> list(Integer type);
+
+    /**
+     * 修改分类
+     * @param categoryDTO 分类信息
+     */
+    void update(CategoryDTO categoryDTO);
 }
