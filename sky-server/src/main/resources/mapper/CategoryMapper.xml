@@ -10,6 +10,7 @@
         (#{type},#{name},#{sort},#{createTime},#{updateTime},#{createUser},#{updateUser})
     </insert>
 
+
     <!--  分类分页查询  -->
     <select id="pageQuery" resultType="com.sky.entity.Category">
         select * from category
@@ -39,4 +40,9 @@
         </set>
         where id = #{id}
     </update>
+
+<!--    根据id删除分类-->
+    <delete id="deleteById">
+        delete from category where id = #{id}
+    </delete>
 </mapper>

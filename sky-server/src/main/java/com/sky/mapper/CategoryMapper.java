@@ -31,8 +31,12 @@ public interface CategoryMapper {
 
     /**
      * 启用禁用分类
-     * @param status 状态
-     * @param id 分类id
      */
     void update(Category category);
+
+    /**
+     * 根据id删除分类
+     * @param id 分类id
+     */
+    void deleteById(Long id);
 }
