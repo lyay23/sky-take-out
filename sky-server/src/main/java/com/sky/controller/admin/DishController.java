@@ -1,16 +1,15 @@
 package com.sky.controller.admin;
 
 import com.sky.dto.DishDTO;
+import com.sky.dto.DishPageQueryDTO;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,9 +29,24 @@ public class DishController {
 
     @PostMapping
     @ApiOperation("新增菜品")
-    public Result save(@RequestBody DishDTO dishDTO) {
+    public Result<Object> save(@RequestBody DishDTO dishDTO) {
         log.info("新增菜品和口味:{}", dishDTO);
         dishService.saveWithFlavor(dishDTO);
         return Result.success();
     }
+
+    /**
+     * 菜品分页查询
+     *
+     */
+    @ApiOperation("分页查询菜品")
+    @GetMapping("/page")
+    // PageResult 分页查询的统一类 DishPageQueryDTO 前端需要接收的请求实体
+    public Result<PageResult> pageQuery( DishPageQueryDTO pageQueryDTO  )  {
+        log.info("分页查询菜品:{}", pageQueryDTO);
+       PageResult pageResult= dishService.pageQuery(pageQueryDTO);
+        return Result.success(pageResult);
+    }
+
+
 }
