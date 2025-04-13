@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -56,4 +58,10 @@ public interface DishMapper {
      */
     @Delete("delete from dish where id=#{id}")
     void deleteBatch(Long id);
+
+    /**
+     * 批量删除菜品
+     * @param ids 多个参数id
+     */
+    void deleteByIds(List<Long> ids);
 }
