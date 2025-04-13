@@ -19,4 +19,9 @@
                                 </foreach>
 
     </delete>
+
+<!--    根据菜品id查询口味-->
+    <select id="getByDishId" resultType="com.sky.entity.DishFlavor">
+        select * from dish_flavor where dish_id = #{dishId}
+    </select>
 </mapper>
