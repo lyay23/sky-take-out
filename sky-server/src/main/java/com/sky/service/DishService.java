@@ -51,9 +51,9 @@ public interface DishService {
     void updateWithFlavor(DishDTO dishDTO);
 
     /**
-     * 根据类型id查询菜品
-     * @param categoryId 菜品类型id
-     * @return 菜品
+     * 根据分类id查询菜品
+     * @param categoryId
+     * @return
      */
-    List<Dish> getByCategoryId(Long categoryId);
+    List<Dish> list(Long categoryId);
 }

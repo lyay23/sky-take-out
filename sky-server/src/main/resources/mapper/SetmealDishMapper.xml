@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.SetmealDishMapper">
 
+
     <!--  根据菜品id查询对应的套餐id  -->
     <select id="getSetmealIdsByDishId" resultType="java.lang.Long">
         select setmeal_id from setmeal_dish where dish_id  in
@@ -18,4 +19,13 @@
         </foreach>
 
     </insert>
+
+<!--    批量删除-->
+    <delete id="deleteByIds">
+        delete from setmeal_dish where setmeal_id in
+                                 <foreach collection="list" item="item" separator=",">
+                                     #{item}
+                                 </foreach>
+
+    </delete>
 </mapper>

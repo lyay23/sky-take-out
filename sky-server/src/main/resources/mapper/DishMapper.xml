@@ -67,13 +67,18 @@ keyProperty: 获得的主键值赋值给哪个属性
           where id = #{id}
     </update>
 
-<!--    根据菜品类型id查询菜品-->
-    <select id="getByCategoryId" resultType="com.sky.entity.Dish">
+    <select id="list" resultType="Dish" parameterType="Dish">
         select * from dish
         <where>
-        <if test="categoryId != null">and category_id = #{categoryId}</if>
-        <if test="status != null">and status = #{status}</if>
-        <if test="name != null and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="name != null">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
         </where>
         order by create_time desc
     </select>

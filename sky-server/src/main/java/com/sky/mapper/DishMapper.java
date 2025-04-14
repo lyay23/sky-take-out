@@ -77,5 +77,5 @@ public interface DishMapper {
      * @param categoryId 菜品类型id
      * @return 菜品和口味
      */
-    List<Dish> getByCategoryId(Long categoryId);
+    List<Dish> list(Dish dish);
 }
