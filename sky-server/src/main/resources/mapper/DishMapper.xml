@@ -82,4 +82,8 @@ keyProperty: 获得的主键值赋值给哪个属性
         </where>
         order by create_time desc
     </select>
+    <select id="getBySetmealId" resultType="com.sky.entity.Dish">
+        select d.* from dish d
+        left join setmeal_dish sd on d.id = sd.dish_id
+    </select>
 </mapper>
