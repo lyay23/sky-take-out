@@ -39,6 +39,10 @@ public interface SetmealDishMapper {
     void deleteBatch(List<Long> ids);
 
 
-
-
+    /**
+     * 根据多个菜品id查询套餐id
+     * @param dishIds
+     * @return
+     */
+    List<Long> getSetmealIdsByDishIds(List<Long> dishIds);
 }

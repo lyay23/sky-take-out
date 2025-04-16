@@ -8,19 +8,23 @@ import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.entity.Setmeal;
 import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +46,9 @@ public class DishServiceImpl implements DishService {
 
     @Autowired
     private SetmealDishMapper setmealDishMapper;
+
+    @Autowired
+    private SetmealMapper setmealMapper;
     /**
      * 新增菜品和口味
      * @param dishDTO 菜品和口味
@@ -172,5 +179,39 @@ public class DishServiceImpl implements DishService {
                 .status(StatusConstant.ENABLE)
                 .build();
         return dishMapper.list(dish);
+    }
+
+    /**
+     * 菜品停售起售功能
+     * @param status 状态
+     * @param id 菜品id
+     */
+    @Override
+    public void updateStatus(Integer status, Long id) {
+        // 挑选出我们需要的参数
+       Dish dish = Dish.builder()
+               .id(id)
+               .status(status)
+               .build();
+       dishMapper.updateById(dish);
+
+       if (status == StatusConstant.ENABLE) {
+           // 如果是停售操作，还需要将包含当前菜品的套餐也停售
+           List<Long> dishIds = new ArrayList<>();
+           dishIds.add(id);
+           // select setmeal_id from setmeal_dish where dish_id in (?,?,?)
+           List<Long> setmealIds = setmealDishMapper.getSetmealIdsByDishIds(dishIds);
+           if (setmealIds != null && setmealIds.size() > 0) {
+               for (Long setmealId : setmealIds) {
+                   Setmeal setmeal = Setmeal.builder()
+                           .id(setmealId)
+                           .status(StatusConstant.DISABLE)
+                           .build();
+                   setmealMapper.update(setmeal);
+               }
+           } // 起售
+           // 查询当前菜品是否被套餐关联
+
+       }
     }
 }

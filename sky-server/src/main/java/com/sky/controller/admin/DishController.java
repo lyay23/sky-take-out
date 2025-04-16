@@ -111,4 +111,15 @@ public class DishController {
         return Result.success(list);
     }
 
+
+    /**
+     * 菜品停售起售功能
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("菜品停售起售功能")
+    public Result updateStatus(@PathVariable Integer status, Long id){
+        log.info("菜品停售起售功能:{},id为:{}", status,id);
+        dishService.updateStatus(status, id);
+        return Result.success();
+    }
 }

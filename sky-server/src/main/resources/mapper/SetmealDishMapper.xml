@@ -12,7 +12,7 @@
         </foreach>
     </select>
 
-<!--    批量插入-->
+    <!--    批量插入-->
     <insert id="insertList" parameterType="list">
         insert into setmeal_dish (setmeal_id, dish_id, name, price, copies) VALUE
         <foreach collection="setmealDishes" item="item" separator=",">
@@ -29,4 +29,11 @@
                                  </foreach>
     </delete>
 
+<!--    查询-->
+    <select id="getSetmealIdsByDishIds" resultType="java.lang.Long">
+        select setmeal_id from setmeal_dish where dish_id in
+                                            <foreach collection="dishIds" item="dishId" open="(" close=")" separator=",">
+                                                #{dishId}
+                                            </foreach>
+    </select>
 </mapper>
