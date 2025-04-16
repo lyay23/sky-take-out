@@ -28,5 +28,21 @@
         order by create_time desc
     </select>
 
-
+<!--    修改套餐-->
+    <update id="update">
+        update setmeal
+        <set>
+            <if test="name != null and name != ''"> name = #{name},</if>
+            <if test="categoryId != null and categoryId != ''"> category_id = #{categoryId},</if>
+            <if test="price != null"> price = #{price},</if>
+            <if test="description != null"> description = #{description},</if>
+            <if test="image != null"> image = #{image},</if>
+            <if test="status != null"> status = #{status},</if>
+            <if test="createTime != null"> create_time = #{createTime},</if>
+            <if test="updateTime != null"> update_time = #{updateTime},</if>
+            <if test="createUser != null"> create_user = #{createUser},</if>
+            <if test="updateUser != null"> update_user = #{updateUser},</if>
+        </set>
+        where id = #{id}
+    </update>
 </mapper>

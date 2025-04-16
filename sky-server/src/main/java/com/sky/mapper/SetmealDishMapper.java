@@ -31,4 +31,8 @@ public interface SetmealDishMapper {
     //根据套餐id查询套餐包含的菜品
     @Select("select * from setmeal_dish where setmeal_id = #{id}")
     List<SetmealDish> getBySetmealId(Long id);
+
+    //根据套餐id插入套餐包含的菜品
+
+
 }

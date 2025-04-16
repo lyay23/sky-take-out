@@ -54,7 +54,7 @@ public class SetmealServiceImpl implements SetmealService {
         setmealMapper.insert(setmeal);
 
         //获取套餐的id
-        Long setmealId = setmeal.getCategoryId();
+        Long setmealId = setmeal.getId();
 
         //向套餐和菜品中间表中添加多条数据
         List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
@@ -127,5 +127,26 @@ public class SetmealServiceImpl implements SetmealService {
         BeanUtils.copyProperties(setmeal,setmealVO);
         setmealVO.setSetmealDishes(setmealDishes);
         return setmealVO;
+    }
+
+    @Override
+    public void update(SetmealDTO setmealDTO) {
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(setmealDTO, setmeal);
+        setmealMapper.update(setmeal);
+
+        Long setmealId = setmealDTO.getId();
+        // 删除套餐和菜品的关联关系
+        setmealDishMapper.deleteBySetmealId(setmealId);
+
+
+        // 向套餐和菜品中间表中添加多条数据
+        List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+        setmealDishes.forEach(setmealDish -> {
+            setmealDish.setSetmealId(setmealId);
+        });
+
+        //插入n条数据-动态sql
+        setmealDishMapper.insertList(setmealDishes);
     }
 }
