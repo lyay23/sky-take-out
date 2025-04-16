@@ -111,4 +111,21 @@ public class SetmealServiceImpl implements SetmealService {
             setmealDishMapper.deleteBySetmealId(setmealID);
         });
     }
+
+    /**
+     * 根据id查询套餐信息
+     * @param id
+     * @return
+     */
+    @Override
+    public SetmealVO getByIdWithCatory(Long id) {
+        Setmeal setmeal= setmealMapper.getById(id);
+
+        List<SetmealDish> setmealDishes = setmealDishMapper.getBySetmealId(id);
+
+        SetmealVO setmealVO = new SetmealVO();
+        BeanUtils.copyProperties(setmeal,setmealVO);
+        setmealVO.setSetmealDishes(setmealDishes);
+        return setmealVO;
+    }
 }
