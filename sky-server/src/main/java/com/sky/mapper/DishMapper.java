@@ -74,7 +74,7 @@ public interface DishMapper {
 
     /**
      * 根据菜品类型id查询菜品
-     * @param categoryId 菜品类型id
+     * @param dish 菜品类型id
      * @return 菜品和口味
      */
     List<Dish> list(Dish dish);

@@ -20,7 +20,4 @@ public interface SetmealDishMapper {
     //根据套餐id插入套餐包含的菜品
 
     void insertList(List<SetmealDish> setmealDishes);
-
-    //根据套餐id删除套餐包含的菜品
-    void deleteByIds(List<Long> ids);
 }
