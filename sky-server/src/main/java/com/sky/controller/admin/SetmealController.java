@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * @Author: 李阳
@@ -49,4 +51,16 @@ public class SetmealController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 删除套餐
+     * - 可以一次删除一个套餐，也可以批量删除套餐
+     * - 起售中的套餐不能删除
+     */
+    @ApiOperation(value = "删除套餐")
+    @DeleteMapping
+    public Result delete(@RequestParam List<Long> ids)  {
+        log.info("删除套餐:{}", ids);
+        setmealService.deleteBatch(ids);
+        return Result.success();
+    }
 }
