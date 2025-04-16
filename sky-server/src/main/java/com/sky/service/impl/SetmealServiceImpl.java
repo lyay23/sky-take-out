@@ -96,22 +96,19 @@ public class SetmealServiceImpl implements SetmealService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteBatch(List<Long> ids) {
-        ids.forEach(id -> {
-            Setmeal setmeal = setmealMapper.getById(id);
-            if (setmeal.getStatus() == StatusConstant.ENABLE) {
+        // 1. 判断菜品是不是售卖中
+        for (Long id : ids) {
+            // 查询菜品是否被售卖中
+           Setmeal setmeal = setmealMapper.getById(id);
+            if(setmeal.getStatus() == StatusConstant.ENABLE){
                 throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
             }
-        });
+        }
 
-        // -这段代码是抄老师的,自己写出来的一直有bug,无法删除菜品口味表
         // 删除套餐和菜品的关联关系
-        ids.forEach(setmealID -> {
-            // 删除套餐
-            setmealMapper.deleteById(setmealID);
+        setmealMapper.deleteBatch(ids);
+        setmealDishMapper.deleteBatch(ids);
 
-            // 删除套餐关联的菜品
-            setmealDishMapper.deleteBySetmealId(setmealID);
-        });
     }
 
     /**

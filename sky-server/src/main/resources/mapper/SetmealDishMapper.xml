@@ -21,6 +21,12 @@
 
     </insert>
 
-
+<!--    动态删除-->
+    <delete id="deleteBatch">
+        delete from setmeal_dish where setmeal_id in
+                                 <foreach collection="ids" item="setmealId" open="(" close=")" separator=",">
+                                     #{setmealId}
+                                 </foreach>
+    </delete>
 
 </mapper>

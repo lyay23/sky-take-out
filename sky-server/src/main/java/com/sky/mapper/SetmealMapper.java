@@ -56,4 +56,9 @@ public interface SetmealMapper {
      * 修改套餐
      */
     void update(Setmeal setmeal);
+
+    /**
+     * 动态批量删除
+     */
+    void deleteBatch(List<Long> ids);
 }
