@@ -11,16 +11,19 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
  *
  * @Author: 李阳
  * @Date: 2025/04/12/21:46
- * @Description: 菜品管理
+ * @Description: 菜品管理(当我们需要新增菜品，修改菜品，删除菜品时，我们的数据都会发生变化，
+ * ，所以我们需要清理redis的缓存数据，然后重新添加数据页面才会显示修改)
  */
 @RestController
 @RequestMapping("/admin/dish")
@@ -31,6 +34,8 @@ public class DishController {
     @Autowired
     private  DishService dishService;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
     /**
      * 新增菜品和口味
      * @param dishDTO
@@ -41,6 +46,10 @@ public class DishController {
     public Result<Object> save(@RequestBody DishDTO dishDTO) {
         log.info("新增菜品和口味:{}", dishDTO);
         dishService.saveWithFlavor(dishDTO);
+
+        //清理redis缓存数据
+        String key = "dish_"+dishDTO.getCategoryId();
+        cleanCache(key);
         return Result.success();
     }
 
@@ -72,6 +81,12 @@ public class DishController {
     public Result delete(@RequestParam List<Long> ids)  {
         log.info("删除菜品:{}", ids);
         dishService.deleteBatch(ids);
+
+        // 当我们删除菜品时，可能需要关联多个菜品表，因此直接清理所有的缓存数据
+        // 所有以dish_开头的key都要删除
+
+        cleanCache("dish_*");
+
         return Result.success();
     }
 
@@ -97,6 +112,13 @@ public class DishController {
     public Result update(@RequestBody DishDTO dishDTO)  {
         log.info("修改菜品和口味:{}", dishDTO);
         dishService.updateWithFlavor(dishDTO);
+
+        //清理redis缓存数据,当我们修改菜品名称时只会涉及一份数据，当我们需要修改
+        //分类时，就需要涉及多份数据，比如我修改了菜品的套餐分类，那么之前的套餐下
+        //就会少一份数据，修改后套餐下就会多一份数据
+        // 所有以dish_开头的key都要删除
+        cleanCache("dish_*");
+
         return Result.success();
     }
 
@@ -120,6 +142,17 @@ public class DishController {
     public Result updateStatus(@PathVariable Integer status, Long id){
         log.info("菜品停售起售功能:{},id为:{}", status,id);
         dishService.updateStatus(status, id);
+
+        //清理redis缓存数据
+        cleanCache("dish_*");
+
         return Result.success();
+    }
+
+    //统一清理redis缓存数据
+    private void  cleanCache(String patten){
+        //清理redis缓存数据
+        Set keys = redisTemplate.keys(patten);
+        redisTemplate.delete(keys);
     }
 }
