@@ -50,4 +50,15 @@ public class ShoppingCartController {
         log.info("查看购物车,商品信息为:{}", list);
         return Result.success(list);
     }
+
+    /**
+     * 清空购物车
+     */
+
+    @ApiOperation("清空购物车")
+    @DeleteMapping("/clean")
+    public Result delete() {
+        shoppingCartService.cleanShoppingCart();
+        return Result.success();
+    }
 }
