@@ -26,7 +26,7 @@ import java.util.HashMap;
  * @Date: 2025/04/19/14:53
  * @Description: 用户端用户登录接口
  */
-@RestController
+@RestController("UserController")
 @RequestMapping("/user/user")
 @Slf4j
 @Api(tags = "用户端用户登录接口")

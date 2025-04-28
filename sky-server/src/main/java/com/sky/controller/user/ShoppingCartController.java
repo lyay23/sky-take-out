@@ -8,10 +8,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date: 2025/04/28/14:43
  * @Description: 购物车相关接口
  */
-@RestController
+@RestController("userShopCartController")
 @RequestMapping("/user/shoppingCart")
 @Api(tags = "C端-购物车接口")
 @Slf4j
@@ -38,5 +37,17 @@ public class ShoppingCartController {
         log.info("添加购物车,商品信息为:{}", shoppingCartDTO);
         shoppingCartService.addShoppingCart(shoppingCartDTO);
         return Result.success();
+    }
+
+    /**
+     * 查看购物车
+     */
+    @ApiOperation("查看购物车")
+    @GetMapping("/list")
+    public Result<List<ShoppingCart>> list() {
+
+        List<ShoppingCart> list=shoppingCartService.showShoppingCart();
+        log.info("查看购物车,商品信息为:{}", list);
+        return Result.success(list);
     }
 }

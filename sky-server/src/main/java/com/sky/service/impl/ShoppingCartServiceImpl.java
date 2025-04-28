@@ -38,6 +38,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private SetmealMapper setmealMapper;
 
 
+    /**
+     * 添加购物车
+     * @param shoppingCartDTO
+     */
     @Override
     public void addShoppingCart(ShoppingCartDTO shoppingCartDTO) {
         //   我们需要判断当前商品是不是以及存在购物车中（注意：不同用户有不同购物车，因此需要以用户id来查数据）
@@ -80,5 +84,23 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         }
 
+    }
+
+
+    /**
+     * 查询购物车
+     * @return
+     */
+    @Override
+    public List<ShoppingCart> showShoppingCart() {
+        // 获取当前微信用户
+        Long userId = BaseContext.getCurrentId();
+        // 查询当前用户购物车，构造购物车对象
+        ShoppingCart shoppingCart = ShoppingCart.builder()
+                .userId(userId)
+                .build();
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
+
+        return list;
     }
 }

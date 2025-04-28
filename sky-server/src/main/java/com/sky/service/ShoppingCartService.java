@@ -1,6 +1,9 @@
 package com.sky.service;
 
 import com.sky.dto.ShoppingCartDTO;
+import com.sky.entity.ShoppingCart;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,5 +13,15 @@ import com.sky.dto.ShoppingCartDTO;
  * @Description: 购物车功能
  */
 public interface ShoppingCartService {
+    /**
+     * 添加购物车
+     * @param shoppingCartDTO
+     */
     void addShoppingCart(ShoppingCartDTO shoppingCartDTO);
+
+    /**
+     * 查询购物车
+     * @return
+     */
+    List<ShoppingCart> showShoppingCart();
 }
