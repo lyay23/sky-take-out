@@ -215,6 +215,12 @@ public class DishServiceImpl implements DishService {
        }
     }
 
+    /**
+     * 根据菜品id查询菜品和口味
+     * @param dish 菜品id
+     * @return
+     */
+
     @Override
     public List<DishVO> listWithFlavor(Dish dish) {
         List<Dish> dishList = dishMapper.list(dish);
