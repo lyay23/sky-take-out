@@ -211,7 +211,8 @@ public class orderServiceImpl implements OrderService {
         // 查询出订单明细，并封装入OrderVO进行响应
         if (page != null && page.getTotal() > 0) {
             for (Orders orders : page) {
-                Long orderId = orders.getId();// 订单id
+                // 订单id
+                Long orderId = orders.getId();
 
                 // 查询订单明细
                 List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);
@@ -224,5 +225,24 @@ public class orderServiceImpl implements OrderService {
             }
         }
         return new PageResult(page.getTotal(), list);
+    }
+
+    /**
+     * 查询订单详情
+     */
+    @Override
+    public OrderVO orderDetail(Long id) {
+        // 根据订单id查询订单
+        Orders ordersDB = orderMapper.getById(id);
+
+        // 根据订单id查询订单明细
+        List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(id);
+
+        // 封装OrderVO
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(ordersDB, orderVO);
+        orderVO.setOrderDetailList(orderDetails);
+
+        return orderVO;
     }
 }
