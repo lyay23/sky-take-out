@@ -20,9 +20,20 @@
        (#{name}, #{image}, #{userId}, #{dishId}, #{setmealId}, #{dishFlavor}, #{number}, #{amount}, #{createTime})
     </insert>
 
-<!--    清空购物车-->
+
+    <!--    清空购物车-->
     <delete id="deleteByUserId">
         delete from shopping_cart where user_id = #{userId}
     </delete>
+
+<!--    再来一单-->
+    <insert id="insertBach">
+        insert into shopping_cart
+        (name, image, user_id, dish_id, setmeal_id, dish_flavor, number, amount, create_time)
+        values
+        <foreach collection="shoppingCartList" item="sc" separator=",">
+            (#{sc.name},#{sc.image},#{sc.userId},#{sc.dishId},#{sc.setmealId},#{sc.dishFlavor},#{sc.number},#{sc.amount},#{sc.createTime})
+        </foreach>
+    </insert>
 
 </mapper>

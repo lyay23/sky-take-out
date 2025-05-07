@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -273,12 +274,33 @@ public class orderServiceImpl implements OrderService {
             // 退款
             //支付状态修改为 退款
             orders.setPayStatus(Orders.REFUND);
-            orders.setStatus(Orders.REFUND);
+            orders.setStatus(Orders.REFUNDMONEY);
         }
         // 更新订单状态、取消原因、取消时间
         orders.setStatus(Orders.CANCELLED);
         orders.setCancelReason("用户取消");
         orders.setCancelTime(LocalDateTime.now());
         orderMapper.update(orders);
+    }
+
+    @Override
+    public void reOrder(Long id) {
+        // 查询当前用户名
+        Long userId = BaseContext.getCurrentId();
+
+        // 根据订单id查询订单
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
+
+        // 将订单对象转为购物车对象
+        List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(orderDetail -> {
+            ShoppingCart shoppingCart = new ShoppingCart();
+            BeanUtils.copyProperties(orderDetail, shoppingCart, "id");
+            shoppingCart.setUserId(userId);
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            return shoppingCart;
+        }).collect(Collectors.toList());
+
+        // 将购物车输出添加到数据库
+        shoppingCartMapper.insertBach(shoppingCartList);
     }
 }

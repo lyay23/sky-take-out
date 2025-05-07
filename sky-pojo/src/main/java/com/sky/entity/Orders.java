@@ -27,7 +27,7 @@ public class Orders implements Serializable {
     public static final Integer DELIVERY_IN_PROGRESS = 4;
     public static final Integer COMPLETED = 5;
     public static final Integer CANCELLED = 6;
-    public static final Integer REFUND = 7;
+    public static final Integer REFUNDMONEY= 7;
 
     /**
      * 支付状态 0未支付 1已支付 2退款
