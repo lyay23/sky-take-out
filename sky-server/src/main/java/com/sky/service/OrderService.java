@@ -1,6 +1,8 @@
 package com.sky.service;
 
-import com.sky.dto.*;
+import com.sky.dto.OrdersPageQueryDTO;
+import com.sky.dto.OrdersPaymentDTO;
+import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.PageResult;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
@@ -71,16 +73,4 @@ public interface OrderService {
      * 管理端各个状态的订单数量统计
      */
     OrderStatisticsVO count();
-
-    /**
-     * 管理端接单
-     * @param ordersConfirmDTO
-     */
-    void confirm(OrdersConfirmDTO ordersConfirmDTO);
-
-    /**
-     * 管理端拒单
-     * @param ordersRejectionDTO
-     */
-    void rejection(OrdersRejectionDTO ordersRejectionDTO);
 }
