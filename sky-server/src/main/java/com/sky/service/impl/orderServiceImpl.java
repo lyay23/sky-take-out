@@ -5,10 +5,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
-import com.sky.dto.OrdersDTO;
-import com.sky.dto.OrdersPageQueryDTO;
-import com.sky.dto.OrdersPaymentDTO;
-import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.*;
 import com.sky.entity.*;
 import com.sky.exception.AddressBookBusinessException;
 import com.sky.exception.OrderBusinessException;
@@ -308,6 +305,12 @@ public class orderServiceImpl implements OrderService {
 
     /**
      * 管理端分页查询订单
+     * - 输入订单号/手机号进行搜索，支持模糊搜索
+     * - 根据订单状态进行筛选
+     * - 下单时间进行时间筛选
+     * - 搜索内容为空，提示未找到相关订单
+     * - 搜索结果页，展示包含搜索关键词的内容
+     * - 分页展示搜索到的订单数据
      * @param ordersPageQueryDTO
      * @return
      */
@@ -380,5 +383,100 @@ public class orderServiceImpl implements OrderService {
 
         return orderStatisticsVO;
 
+    }
+
+    /**
+     * 管理端接单
+     * 商家接单其实就是将订单的状态修改为“已接单”
+     * @param ordersConfirmDTO
+     */
+    @Override
+    public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
+        Orders orders = Orders.builder()
+                .id(ordersConfirmDTO.getId())
+                .status(Orders.CONFIRMED)
+                .build();
+
+        orderMapper.update(orders);
+    }
+
+    /**
+     * 管理端拒单
+     * - 商家拒单其实就是将订单状态修改为“已取消”
+     * - 只有订单处于“待接单”状态时可以执行拒单操作
+     * - 商家拒单时需要指定拒单原因
+     * - 商家拒单时，如果用户已经完成了支付，需要为用户退款
+     */
+    @Override
+    public void rejection(OrdersRejectionDTO ordersRejectionDTO) {
+        // 根据id查询订单
+        Orders ordersDB = orderMapper.getById(ordersRejectionDTO.getId());
+
+        // 订单只有存在且状态为2（待接单）才可以拒单
+        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        //支付状态
+        Integer payStatus = ordersDB.getPayStatus();
+        if (payStatus == Orders.PAID) {
+            //用户已支付，需要退款
+            // 拒单需要退款，根据订单id更新订单状态、拒单原因、取消时间
+            Orders orders = new Orders();
+            orders.setId(ordersDB.getId());
+            orders.setStatus(Orders.CANCELLED);
+            orders.setRejectionReason(ordersRejectionDTO.getRejectionReason());
+            orders.setCancelTime(LocalDateTime.now());
+
+            orderMapper.update(orders);
+        }
+    }
+
+    /**
+     * 商家取消订单
+     * - 取消订单其实就是将订单状态修改为“已取消”
+     * - 商家取消订单时需要指定取消原因
+     * - 商家取消订单时，如果用户已经完成了支付，需要为用户退款
+     */
+    @Override
+    public void cancelOrder(OrdersCancelDTO ordersCancelDTO) {
+        // 根据id查询订单
+        Orders ordersDB = orderMapper.getById(ordersCancelDTO.getId());
+
+        //支付状态
+        Integer payStatus = ordersDB.getPayStatus();
+        if (payStatus == 1) {
+            //用户已支付，需要退款
+            // 取消订单需要退款，根据订单id更新订单状态、取消原因、取消时间
+            Orders orders = new Orders();
+            orders.setId(ordersDB.getId());
+            orders.setStatus(Orders.CANCELLED);
+            orders.setCancelReason(ordersCancelDTO.getCancelReason());
+            orders.setCancelTime(LocalDateTime.now());
+
+            orderMapper.update(orders);
+        }
+    }
+
+    /**
+     * 商家派送
+     * - 商家派送其实就是将订单状态修改为“派送中”
+     * - 只有订单处于“已接单”状态时才可以执行派送操作
+     */
+    @Override
+    public void delivery(Long id) {
+        // 根据id查询订单
+        Orders ordersDB = orderMapper.getById(id);
+
+        // 校验订单是否存在，并且状态为3
+        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.CONFIRMED)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        Orders orders = new Orders();
+        orders.setId(ordersDB.getId());
+        // 更新订单状态,状态转为派送中
+        orders.setStatus(Orders.DELIVERY_IN_PROGRESS);
+        orderMapper.update(orders);
     }
 }
