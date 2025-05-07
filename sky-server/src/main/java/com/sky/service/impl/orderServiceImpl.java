@@ -391,4 +391,36 @@ public class orderServiceImpl implements OrderService {
                 .build();
         orderMapper.update(orders);
     }
+
+    /**
+     * 管理端订单拒单
+     * - 商家拒单其实就是将订单状态修改为“已取消”
+     * - 只有订单处于“待接单”状态时可以执行拒单操作
+     * - 商家拒单时需要指定拒单原因
+     * - 商家拒单时，如果用户已经完成了支付，需要为用户退款
+     * @param ordersRejectionDTO
+     */
+    @Override
+    public void rejection(OrdersRejectionDTO ordersRejectionDTO) {
+        // 根据id查询订单
+        Orders ordersDB = orderMapper.getById(ordersRejectionDTO.getId());
+
+        // 订单只有存在且状态为2（待接单）才可以拒单
+        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        //支付状态
+        Integer payStatus = ordersDB.getPayStatus();
+        if (payStatus == Orders.PAID) {
+            //用户已支付，需要退款
+            Orders orders = new Orders();
+            orders.setId(ordersDB.getId());
+            orders.setStatus(Orders.CANCELLED);
+            orders.setRejectionReason(ordersRejectionDTO.getRejectionReason());
+            orders.setCancelTime(LocalDateTime.now());
+            orderMapper.update(orders);
+        }
+
+    }
 }
