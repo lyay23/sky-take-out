@@ -89,4 +89,9 @@ public interface OrderMapper {
      * @return
      */
     Double sumByMap(Map map);
+
+    /**
+     * 统计当天有效营业和订单总数
+     */
+    Integer countByMap(Map map);
 }
