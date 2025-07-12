@@ -86,4 +86,16 @@ keyProperty: 获得的主键值赋值给哪个属性
         select d.* from dish d
         left join setmeal_dish sd on d.id = sd.dish_id
     </select>
+
+    <select id="countByMap" resultType="java.lang.Integer">
+        select count(id) from dish
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+        </where>
+    </select>
 </mapper>
