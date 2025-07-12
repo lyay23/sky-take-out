@@ -1,10 +1,13 @@
 package com.sky.service.impl;
 
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
+import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.OrderReportVO;
+import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,7 +41,11 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     private UserMapper userMapper;
 
-    /**
+    @Autowired
+    private OrderDetailMapper orderDetailMapper;
+
+
+     /**
      * 营业额统计
      * @param begin
      * @param end
@@ -199,5 +207,37 @@ public class ReportServiceImpl implements ReportService {
         map.put("end",end);
         map.put("status", status);
         return orderMapper.countByMap(map);
+    }
+
+
+
+    /**
+     * 销量排名Top10
+     * @param begin
+     * @param end
+     * @return
+     */
+    @Override
+    public SalesTop10ReportVO getSalesTop10(LocalDate begin, LocalDate end) {
+        LocalDateTime beginTime=LocalDateTime.of(begin,LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(end, LocalTime.MAX);
+        List<GoodsSalesDTO> salesTop10 = orderMapper.getSalesTop10(beginTime, endTime);
+
+        // 1. 将salesTop10集合转换为流
+        // 2. 通过map操作将每个GoodsSalesDTO对象映射为其getName()返回的字符串
+        // 3. 最后通过collect操作将处理后的元素收集到一个新的List<String>中
+        List<String> names = salesTop10.stream().map(GoodsSalesDTO::getName).collect(Collectors.toList());
+
+        String nameList = StringUtils.join(names, ",");
+
+        List<Integer> numbers = salesTop10.stream().map(GoodsSalesDTO::getNumber).collect(Collectors.toList());
+        String numberList=StringUtils.join(numbers,",");
+
+        return SalesTop10ReportVO.builder()
+                .nameList(nameList)
+                .numberList(numberList)
+                .build();
+
+
     }
 }
