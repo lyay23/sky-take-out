@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -80,4 +81,12 @@ public interface OrderMapper {
      */
     @Select("select * from orders where status=#{status} and order_time<#{orderTime}")
     List<Orders> getByStatusAndOrderTimeLT(Integer status,LocalDateTime orderTime);
+
+
+
+    /**
+     * 根据动态条件统计营业额数据
+     * @return
+     */
+    Double sumByMap(Map map);
 }
